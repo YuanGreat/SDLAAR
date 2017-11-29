@@ -1,0 +1,24 @@
+//
+//  AATimeCell.h
+//  AAR Diagnostic Tool
+//
+//  Created by Dandy.Guan on 2017/11/21.
+//  Copyright © 2017年 YuanWei. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@class AADataModel;
+
+@interface AATimeCell : UITableViewCell
+
+@property (assign, nonatomic) BOOL isOpen;
+
+- (void)configureCellByModel:(AADataModel *)model;
+
+- (void)changeArrowWithUp:(BOOL)isOpen;
+
+
+@property (weak, nonatomic) IBOutlet UIButton *selectedButton;
+
+@end
