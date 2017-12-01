@@ -14,17 +14,10 @@
 //NSString *const SDLAppId = @"3684284455";
 NSString *const SDLAppName = @"Smart Air";
 NSString *const SDLAppId = @"151125411";
-
 NSString *const PointingSoftButtonArtworkName = @"PointingSoftButtonIcon";
 NSString *const MainGraphicArtworkName = @"MainArtwork";
 
 BOOL const ShouldRestartOnDisconnect = NO;
-
-// Notifications used to show/hide lockscreen in the AppDelegate
-NSString *const ASDLDisconnectNotification = @"com.sdl.notification.sdldisconnect";
-NSString *const ASDLLockScreenStatusNotification = @"com.sdl.notification.sdlchangeLockScreenStatus";
-NSString *const ASDLNotificationUserInfoObject = @"com.sdl.notification.keys.sdlnotificationObject";
-NSString *const ASDLOnSystemRequestNotification = @"com.sdl.notification.keys.sdlonSystemRequestObject";
 
 typedef NS_ENUM(NSUInteger, SDLHMIFirstState) {
     SDLHMIFirstStateNone,
@@ -40,11 +33,12 @@ typedef NS_ENUM(NSUInteger, SDLHMIInitialShowState) {
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ProxyManager () <SDLManagerDelegate> //SDLProxyListener
+@interface ProxyManager () <SDLManagerDelegate,SDLProxyListener> //SDLProxyListener
 
 //Describes the first time the HMI state goes non-none and full.
 @property (assign, nonatomic) SDLHMIFirstState firstTimeState;
 @property (assign, nonatomic) SDLHMIInitialShowState initialShowState;
+@property (weak, nonatomic) id <SDLProxyListener> proxyListener;
 
 @end
 
@@ -96,9 +90,9 @@ NS_ASSUME_NONNULL_BEGIN
     
     SDLConfiguration *config = [SDLConfiguration configurationWithLifecycle:lifecycleConfig lockScreen:[SDLLockScreenConfiguration enabledConfiguration]];
     self.sdlManager = [[SDLManager alloc] initWithConfiguration:config delegate:self];
-   
+    self.proxyListener = self;
 
-//    [self.sdlManager.proxy addDelegate:self];
+   [self.sdlManager.proxy addDelegate:self];
 
     
     [self startManager];
@@ -231,7 +225,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (SDLLifecycleConfiguration *)sdlex_setLifecycleConfigurationPropertiesOnConfiguration:(SDLLifecycleConfiguration *)config {
     SDLArtwork *appIconArt = [SDLArtwork persistentArtworkWithImage:[UIImage imageNamed:@"AppIcon60x60@2x"] name:@"AppIcon" asImageFormat:SDLArtworkImageFormatPNG];
     
-    config.shortAppName = @"SDL Example";
+    config.shortAppName = @"Smart Air";
     config.appIcon = appIconArt;
     config.voiceRecognitionCommandNames = @[@"S D L Example"];
     config.ttsName = [SDLTTSChunk textChunksFromString:config.shortAppName];
@@ -483,65 +477,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 
-/**
- *  Posts SDL notifications.
- *
- *  @param name The name of the SDL notification
- *  @param info The data associated with the notification
- */
-- (void)hsdl_postNotification:(NSString *)name info:(id)info {
-    NSDictionary *userInfo = nil;
-    if (info != nil) {
-        userInfo = @{
-                     ASDLNotificationUserInfoObject : info
-                     };
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:name object:self userInfo:userInfo];
-}
 
-#pragma mark Lockscreen
-
-//
-//
-//
-//
-//
-///**
-// *  Delegate method that runs when lockscreen status changes.
-// */
-//- (void)onOnLockScreenNotification:(SDLLockScreenStatus *)notification {
-//    NSLog(@"OnLockScreen notification from SDL");
-//
-//    // Notify the app delegate
-//    [self hsdl_postNotification:ASDLLockScreenStatusNotification info:notification];
-//   // [_aaSDLDelegate aaManagerDidDisconnect];
-//}
-//
-///**
-// *  Delegate method that runs when lockscreen status changes.
-// */
-//- (void)onOnSystemRequest:(SDLOnSystemRequest *)notification{
-//    //    @property (strong) SDLRequestType *requestType;
-//    //    @property (strong) NSString *url;
-//    //    @property (strong) NSNumber *timeout;
-//    //    @property (strong) SDLFileType *fileType;
-//    //    @property (strong) NSNumber *offset;
-//    //    @property (strong) NSNumber *length;
-//    NSDictionary *dic = [AATool dictionaryWithData:notification.bulkData];
-//    NSString *string = [AATool dictionaryToJson:dic];
-//    //self.onSystemRequestLabel.text = [NSString stringWithFormat:@"%@ --- %@",@"onRequest",string];
-//
-//    //self.onSystemRequestLabel.text = [NSString stringWithFormat:@"%@%@",notification.url,notification.bulkData];
-//    [_aaSDLDelegate aaOnOnSystemRequest:notification];
-//
-//    // Notify the app delegate
-//
-//
-//
-//
-//    [self hsdl_postNotification:ASDLOnSystemRequestNotification info:notification];
-//   // [_aaSDLDelegate aaManagerDidDisconnect];
-//}
 
 
 @end

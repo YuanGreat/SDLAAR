@@ -9,7 +9,7 @@
 #import "AATimeCell.h"
 #import "AADataModel.h"
 #import "AATool.h"
-
+#import "UIColor+PMColors.h"
 
 @interface AATimeCell ()
 
@@ -20,6 +20,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *exteriorStateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *cabinValueLabel;
 @property (weak, nonatomic) IBOutlet UILabel *cabinStateLabel;
+@property (weak, nonatomic) IBOutlet UILabel *typeLabel;
+@property (weak, nonatomic) IBOutlet UIView *cellColorView;
+
+
 
 @end
 
@@ -38,7 +42,6 @@
     self.exteriorStateLabel.numberOfLines = 0;
     self.cabinValueLabel.numberOfLines = 0;
     self.cabinStateLabel.numberOfLines = 0;
-
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -50,23 +53,45 @@
 - (void)configureCellByModel:(AADataModel *)model{
     self.dateLabel.text = [NSString stringWithFormat:@"Date: %@",model.date];
     self.secondLabel.text = [NSString stringWithFormat:@"Time: %@",model.time];
+    if ([model.sending_side isEqualToString:@"rx"]) {
+        self.exteriorValueLabel.text = [NSString stringWithFormat:@"Cabin PM Value: %@",model.cabin_PM_value];
+        self.exteriorStateLabel.text = [NSString stringWithFormat:@"Cabin PM Diagnostic State: %@",[AATool diagnosticStateByCode:model.cabin_PM_diagnostic_state]];
+        self.typeLabel.text = @"rx";
+        self.cellColorView.backgroundColor = [UIColor rxCellColor];
+        
+    }
+    if ([model.sending_side isEqualToString:@"tx"]){
+        self.exteriorValueLabel.text = [NSString stringWithFormat:@"Exterior PM Value: %@",model.exterior_PM_value];
+        self.exteriorStateLabel.text = [NSString stringWithFormat:@"Exterior PM Diagnostic State: %@",[AATool diagnosticStateByCode:model.exrerior_PM_diagnostic_state]];
+        self.typeLabel.text = @"tx";
+        self.cellColorView.backgroundColor = [UIColor txCellColor];
+    }
+    
+    if ([model.exterior_PM_value isEqualToString:@"275"]) {
+        NSLog(@"274");
+    }
+    
     if ([model.ifOpen isEqualToString:@"YES"]) {
         self.exteriorValueLabel.hidden = NO;
         self.exteriorStateLabel.hidden = NO;
-        self.cabinValueLabel.hidden = NO;
-        self.cabinStateLabel.hidden = NO;
-        self.exteriorValueLabel.text = [NSString stringWithFormat:@"Exterior PM Value: %@",model.exterior_PM_value];
-        self.exteriorStateLabel.text = [NSString stringWithFormat:@"Exterior PM Diagnostic State: %@",[AATool diagnosticStateByCode:model.exrerior_PM_diagnostic_state]];
-        self.cabinValueLabel.text = [NSString stringWithFormat:@"Cabin PM Value: %@",model.cabin_PM_value];
-        self.cabinStateLabel.text = [NSString stringWithFormat:@"Cabin PM Diagnostic State: %@",[AATool diagnosticStateByCode:model.cabin_PM_diagnostic_state]];
+//        self.cabinValueLabel.hidden = NO;
+//        self.cabinStateLabel.hidden = NO;
+       
+      
+//        self.cabinValueLabel.text = [NSString stringWithFormat:@"Cabin PM Value: %@",model.cabin_PM_value];
+//        self.cabinStateLabel.text = [NSString stringWithFormat:@"Cabin PM Diagnostic State: %@",[AATool diagnosticStateByCode:model.cabin_PM_diagnostic_state]];
         self.arrowImage.image = [UIImage imageNamed:@"arrowDown"];
     }else{
         self.exteriorValueLabel.hidden = YES;
         self.exteriorStateLabel.hidden = YES;
-        self.cabinValueLabel.hidden = YES;
-        self.cabinStateLabel.hidden = YES;
+//        self.cabinValueLabel.hidden = YES;
+//        self.cabinStateLabel.hidden = YES;
         self.arrowImage.image = [UIImage imageNamed:@"arrowUp"];
     }
+    
+    
+ 
+    
 }
 
 - (void)changeArrowWithUp:(BOOL)isOpen{

@@ -65,5 +65,16 @@
     return RGBA(252, 51, 43, 1.0);
 }
 
+//rxCellColor
++ (UIColor *)rxCellColor{
+    return RGB(240, 240, 240);
+}
+
+//txCellColor
++ (UIColor *)txCellColor{
+    return RGB(178, 201, 237);
+}
+
+
 
 @end

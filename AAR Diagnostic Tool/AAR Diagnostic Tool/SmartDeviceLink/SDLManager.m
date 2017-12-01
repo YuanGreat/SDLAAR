@@ -57,7 +57,6 @@ NS_ASSUME_NONNULL_BEGIN
     [self.lifecycleManager stop];
 }
 
-
 #pragma mark - Passthrough getters / setters
 
 - (SDLConfiguration *)configuration {

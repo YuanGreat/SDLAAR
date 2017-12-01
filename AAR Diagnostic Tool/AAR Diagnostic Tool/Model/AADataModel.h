@@ -17,6 +17,7 @@
 @property (nonatomic, copy) NSString *cabin_PM_value;
 @property (nonatomic, copy) NSString *cabin_PM_diagnostic_state;
 @property (nonatomic, copy) NSString *ifOpen;
+@property (nonatomic, copy) NSString *sending_side;  //tx为app向sync端发送的数据 rx为sync向app发送的数据
 
 
 @end

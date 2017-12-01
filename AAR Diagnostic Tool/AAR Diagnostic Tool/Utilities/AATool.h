@@ -88,6 +88,7 @@
  *  删除UserDefault文件
  */
 
++ (NSString*)convertToJSONData:(id)infoDict;
 
 
 

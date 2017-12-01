@@ -42,7 +42,7 @@
 
 @property (nonatomic, strong) UILabel *labelCarbin;  //室内PM2.5值label
 
-@property (nonatomic, strong) AAClimateModel *climateModel; //室外空气数据
+//@property (nonatomic, strong) AAClimateModel *climateModel; //室外空气数据
 
 @property (weak, nonatomic) IBOutlet UILabel *cityLabel;
 

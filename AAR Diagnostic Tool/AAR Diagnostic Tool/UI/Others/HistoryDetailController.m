@@ -24,6 +24,9 @@
     self = [super init];
     if (self) {
         self.dataList = [NSMutableArray arrayWithArray:dataList];
+        
+        NSLog(@"self.dataList%@",self.dataList);
+        
     }
     return self;
 }
@@ -44,7 +47,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     AADataModel *model = self.dataList[indexPath.row];
     if ([model.ifOpen isEqualToString:@"YES"]) {
-        return 155;
+        return 105;
     }else{
         return 40;
     }
@@ -60,14 +63,20 @@
     
     AADataModel *dataModel = [[AADataModel alloc] init];
     dataModel = self.dataList[indexPath.row];
+    
+    NSLog(@"dataModel.sending_side  -----------  %@",dataModel.sending_side);
+    
+    
     [timeCell configureCellByModel:dataModel];
     return timeCell;
 }
 
 - (void)timeLabelSelected:(UIButton *)sender{
     NSInteger index = sender.titleLabel.text.integerValue;
-    NSLog(@"index  -------  %ld",index);
+    
     AADataModel *model = self.dataList[index];
+    
+    NSLog(@"index  -------  %ld    model.type %@",index,model.sending_side);
     if ([model.ifOpen isEqualToString:@"NO"]) {
         model.ifOpen = @"YES";
     }else{

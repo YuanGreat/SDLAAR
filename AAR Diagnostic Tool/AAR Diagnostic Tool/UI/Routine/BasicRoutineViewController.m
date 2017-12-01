@@ -84,32 +84,24 @@
 
 #pragma mark SDL Notifications
 - (void)recieveOnSystemRequest:(NSNotification *)notification {
-    // Delegate method to handle changes in lockscreen status
-    
-    NSLog(@"AppDelegate received OnSystemRequest notification: %@", notification);
-    NSLog(@"FMCAARMonitor - onSDLSystemRequest: %@", notification);
-    
     SDLOnSystemRequest *systemNotification = nil;
     if (notification && notification.userInfo) {
-        systemNotification = notification.userInfo[SDLDidReceiveSystemRequestNotification];
+        systemNotification = notification.userInfo[SDLNotificationUserInfoObject];
     }
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([systemNotification.requestType isEqualToEnum:[SDLRequestType CLIMATE]]) {
             if (systemNotification.bulkData) {
-                //            [self sendAARData:notification.bulkData];
-                //            [AATool ]
                 NSDictionary *dic = [AATool dictionaryWithData:systemNotification.bulkData];
-                //NSString *string = [AATool dictionaryToJson:dic];
                 //接收sync端返回app车内pm2.5值
                 AADataModel *dataModel = [[AADataModel alloc] init];
                 NSArray *array = [AATool currentTime];
                 dataModel.date = array[0];
                 dataModel.time = array[1];
-                dataModel.exterior_PM_value = self.climateModel.exterior_pm_value;
-                dataModel.exrerior_PM_diagnostic_state = self.climateModel.diagnostic_state;
-                dataModel.cabin_PM_value = dic[@"cabin_PM_value"];
-                dataModel.cabin_PM_diagnostic_state = dic[@"cabin_PM_diagnostic_state"];
+                dataModel.exterior_PM_value = @"X";
+                dataModel.exrerior_PM_diagnostic_state = @"X";
+                dataModel.cabin_PM_value = dic[@"cabin_pm_value"];
+                dataModel.cabin_PM_diagnostic_state = dic[@"diagnostic_state"];
+                dataModel.sending_side = @"rx";
                 dataModel.ifOpen = @"NO";
                 [self.dataList addObject:dataModel];
                 [self showtableViewByModel:dataModel];
@@ -125,6 +117,7 @@
 - (IBAction)didTapStart:(id)sender {
   //初始化
      [self.dataList removeAllObjects];
+    [self.dataTable reloadData];
      self.fileName = 0;
     
     //设置按钮颜色
@@ -136,7 +129,6 @@
 }
 
 - (IBAction)didTapStop:(id)sender {
-    
     //设置按钮颜色
     self.startButton.enabled = YES;
     self.stopButton.enabled = NO;
@@ -157,7 +149,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     AADataModel *model = self.dataList[indexPath.row];
     if ([model.ifOpen isEqualToString:@"YES"]) {
-        return 155;
+        return 105;
     }else{
         return 40;
     }
@@ -168,47 +160,26 @@
     if (timeCell == nil) {
         timeCell = [[[NSBundle mainBundle] loadNibNamed:@"AATimeCell" owner:nil options:nil] firstObject];
     }
-    [timeCell.selectedButton setTitle:[NSString stringWithFormat:@"%ld",indexPath.row] forState:UIControlStateNormal];
+    [timeCell.selectedButton setTitle:[NSString stringWithFormat:@"%ld",(long)indexPath.row] forState:UIControlStateNormal];
     [timeCell.selectedButton addTarget:self action:@selector(timeLabelSelected:) forControlEvents:UIControlEventTouchUpInside];
     
     AADataModel *dataModel = [[AADataModel alloc] init];
     dataModel = self.dataList[indexPath.row];
     [timeCell configureCellByModel:dataModel];
-    
- 
-//    NSString *displayStr;
-    //show displayStr
-//    if (self.dataList != nil && [self.dataList count] > 0) {
-//        AADataModel *rs = (AADataModel *)[self.dataList objectAtIndex:indexPath.row];
-//        displayStr = @"1";
-//        //
-//    }else{
-//        displayStr = @"";
-//    }
-//
-//    [cell.textLabel setFont:[UIFont systemFontOfSize:12]];
-//    [cell.textLabel setNumberOfLines:2];
-//    [cell.textLabel setLineBreakMode:NSLineBreakByWordWrapping];
-//
-//    [cell.textLabel setText:displayStr];
     return timeCell;
 }
 
 - (void)timeLabelSelected:(UIButton *)sender{
     NSInteger index = sender.titleLabel.text.integerValue;
-    
-    NSLog(@"index  -------  %ld",index);
+    NSLog(@"index  -------  %ld",(long)index);
     AADataModel *model = self.dataList[index];
     if ([model.ifOpen isEqualToString:@"NO"]) {
         model.ifOpen = @"YES";
     }else{
         model.ifOpen = @"NO";
     }
-    
     [self.dataList replaceObjectAtIndex:index withObject:model];
-    
     [self.dataTable reloadData];
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -238,17 +209,13 @@
     }else{
          self.labelCarbin.text = model.cabin_PM_value;
     }
-    
-  
     NSLog(@"self.list----------- %ld",self.dataList.count);
-    
     [self.dataTable reloadData];
 }
 
 - (BOOL)uploadAARJSONByModel:(AAClimateModel *)model{
     __block NSString *putFileState;
    // __block NSString *systemRequestState;
-    
     NSData *fileData = [AATool dataWithClimateModel:model];
     NSString *fileName = [NSString stringWithFormat:@"%ld",(long)self.fileName];;
     ProxyManager *proxyManager = [ProxyManager sharedManager];
@@ -258,32 +225,28 @@
     putFile.fileType = [SDLFileType JSON];
     putFile.systemFile = @(NO);
     putFile.persistentFile = @(NO);
-    
-   __block BOOL ifSuccess = NO;
+    __block BOOL ifSuccess = NO;
     [proxyManager.sdlManager sendRequest:putFile withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
         NSLog(@"responseClass ----  ····%@", NSStringFromClass([response class]));
         
         if ([response.resultCode isEqualToEnum:[SDLResult SUCCESS]]) {
-            
             putFileState = [NSString stringWithFormat:@"putFile返回结果：成功 fileName ---- %@ ",fileName];
-            
             SDLSystemRequest *systemRequest = [[SDLSystemRequest alloc] init];
             systemRequest.requestType = [SDLRequestType CLIMATE];
             systemRequest.fileName = fileName;
-           
-            [proxyManager.sdlManager sendRequest:systemRequest withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-                
-                if ([response.resultCode isEqualToEnum:[SDLResult SUCCESS]]) {
-                    ifSuccess = YES;
-                }else{
-                    
-                }
-               
-            }];
+            [proxyManager.sdlManager sendRequest:systemRequest];
+//            [proxyManager.sdlManager sendRequest:systemRequest withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+//                
+//                if ([response.resultCode isEqualToEnum:[SDLResult SUCCESS]]) {
+//                    ifSuccess = YES;
+//                }else{
+//                    
+//                }
+//               
+//            }];
         }else{
             putFileState = @"putFile返回结果：失败";
         }
-        
         if (self.fileName == 10) {
             self.fileName = 1;
         }else{
@@ -293,4 +256,5 @@
     return ifSuccess;
 }
 
+                
 @end

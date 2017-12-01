@@ -22,5 +22,7 @@
 
 + (UIColor *)startButtonColor;
 + (UIColor *)stopButtonColor;
++ (UIColor *)rxCellColor;
++ (UIColor *)txCellColor;
 
 @end

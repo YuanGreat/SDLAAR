@@ -18,8 +18,9 @@
 #import "RoutineFourViewController.h"
 #import "HistoryDataViewController.h"
 #import "ConfigurationViewController.h"
+#import "AADataModel.h"
 
-@interface ViewController ()<AASDLDelegate>
+@interface ViewController ()<AASDLDelegate,SDLManagerDelegate,SDLProxyListener>
 
 @property (weak, nonatomic) IBOutlet UIButton *connectButton;
 @property (weak, nonatomic) IBOutlet UILabel *putFileLabel;
@@ -28,6 +29,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *testLable;
 @property (nonatomic, assign) __block NSInteger fileNameCount;
 //@property (nonatomic,weak) id<AASDLDelegate> aaSDLDelegate;
+@property (weak, nonatomic) id <SDLProxyListener> proxyListener;
+@property (assign, nonatomic) NSInteger count;
 
 @end
 
@@ -35,32 +38,48 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-   
     [ProxyManager sharedManager].aaSDLDelegate = self;
     // Do any additional setup after loading the view, typically from a nib.
     // Observe Proxy Manager state
     [[ProxyManager sharedManager] addObserver:self forKeyPath:NSStringFromSelector(@selector(state)) options:(NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew) context:nil];
     self.fileNameCount = 1;
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataAvailable:) name:SDLDidReceiveSystemRequestNotification object:nil];
-    
-    //注册监听
-    [self hsdl_registerForNotifications];
-    
+    [self registerForNotifications];
+    self.proxyListener = self;
+    self.count = 0;
 }
-- (void)hsdl_registerForNotifications {
+
+- (void)registerForNotifications {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserver:self selector:@selector(didChangeLockScreenStatus:) name:ASDLLockScreenStatusNotification object:nil];
-    [center addObserver:self selector:@selector(recieveOnSystemRequest:) name:ASDLOnSystemRequestNotification object:nil];
+    [center addObserver:self selector:@selector(recieveOnSystemRequest:) name:SDLDidReceiveSystemRequestNotification object:nil];
 }
 
 #pragma mark SDL Notifications
-- (void)didChangeLockScreenStatus:(NSNotification *)notification {
-    // Delegate method to handle changes in lockscreen status
-    NSLog(@"AppDelegate received didChangeLockScreenStatus notification: %@", notification);
-    
+- (void)recieveOnSystemRequest:(NSNotification *)notification {
+    self.count ++;
+    SDLOnSystemRequest *systemNotification = nil;
+    if (notification && notification.userInfo) {
+        systemNotification = notification.userInfo[SDLNotificationUserInfoObject];
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([systemNotification.requestType isEqualToEnum:[SDLRequestType CLIMATE]]) {
+            if (systemNotification.bulkData) {
+                NSDictionary *dic = [AATool dictionaryWithData:systemNotification.bulkData];
+                //接收sync端返回app车内pm2.5值
+                AADataModel *dataModel = [[AADataModel alloc] init];
+                NSArray *array = [AATool currentTime];
+                
+                
+                
+                NSString *cabin_pm_value = dic[@"cabin_pm_value"];
+                NSString *diagnostic_state = dic[@"diagnostic_state"];
+                NSString *pm_type = dic[@"pm_type"];
+                
+             self.onSystemRequestLabel.text = [NSString stringWithFormat:@"count --- %ld cabin_pm_value -- %@ diagnostic_state ----%@  pm_type ----- %@ ",(long)self.count,cabin_pm_value,diagnostic_state,pm_type];
+      
+            }
+        }
+    });
 }
-
-
 
 - (void)dataAvailable:(SDLRPCNotificationNotification *)notification{
     if (![notification.notification isKindOfClass:SDLSystemRequest.class]) {
@@ -89,7 +108,7 @@
     NSString *fileName = [NSString stringWithFormat:@"%ld", self.fileNameCount];
   
     __block NSString *putFileState;
-    __block NSString *systemRequestState;
+    __block NSString *systemRequestState = @"00";
     
     AAClimateModel *model = [[AAClimateModel alloc] init];
     
@@ -109,30 +128,36 @@
     putFile.systemFile = @(NO);
     putFile.persistentFile = @(NO);
     
+   // self.onSystemRequestLabel.text = [NSString stringWithFormat:@"%@",proxyManager.sdlManager.hmiLevel];
+    
+    
     [proxyManager.sdlManager sendRequest:putFile withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
         NSLog(@"responseClass ----  ····%@", NSStringFromClass([response class]));
         
         if ([response.resultCode isEqualToEnum:[SDLResult SUCCESS]]) {
         
              putFileState = [NSString stringWithFormat:@"putFile返回结果：成功 fileName ---- %@ ",fileName];
-                
+            
                 SDLSystemRequest *systemRequest = [[SDLSystemRequest alloc] init];
                 systemRequest.requestType = [SDLRequestType CLIMATE];
                 systemRequest.fileName = fileName;
-                //self.onSystemRequestLabel.text = [NSString stringWithFormat:@"fileName ---- %@  systemRequest.requestType ----- %@",fileName,systemRequest.requestType];
-            
-            
-           // [proxyManager.sdlManager sendp]
+                self.onSystemRequestLabel.text = [NSString stringWithFormat:@"fileName ---- %@  systemRequest.requestType ----- %@",fileName,systemRequest.requestType];
+     
+          
+      
                 [proxyManager.sdlManager sendRequest:systemRequest withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-                    
-                  //  self.onSystemRequestLabel.text = [NSString stringWithFormat:@"%@ - %@ - %@",response.correlationID,response.resultCode,response.info];
-                    if ([response.resultCode isEqualToEnum:[SDLResult SUCCESS]]) {
-                        systemRequestState = @"systemRequest返回结果：成功";
-                    }else{
-                        systemRequestState = @"systemRequest返回结果：失败 ";
-                    }
-                    self.systemRequestLabel.text = systemRequestState;
+
+      dispatch_async(dispatch_get_main_queue(), ^{
+
+                        if ([response.resultCode isEqualToEnum:[SDLResult SUCCESS]]) {
+                            systemRequestState = @"systemRequest返回结果：成功";
+                        }else{
+                            systemRequestState = @"systemRequest返回结果：失败 ";
+                        }
+                        self.systemRequestLabel.text = systemRequestState;
+            });
                 }];
+               
      }else{
              putFileState = @"putFile返回结果：失败";
         }
@@ -145,37 +170,15 @@
         }else{
             self.fileNameCount += 1;
         }
-        
-    
- 
     }];
     
     
-//    SDLOnSystemRequest *notification = [[SDLOnSystemRequest alloc] init];
-//    notification.requestType = [SDLRequestType CLIMATE];
-//    //        notification.offset = [NSNumber numberWithInt:0];
-//    //        notification.url = @"";
-//    
-// 
-//      [self postRPCNotificationNotification:SDLDidReceiveSystemRequestNotification notification:notification];
-//    
-//
-//    
+
 //    SDLSystemRequest *systemRequest = [[SDLSystemRequest alloc] init];
 //    systemRequest.requestType = [SDLRequestType CLIMATE];
 //    systemRequest.fileName = fileName;
-//    self.onSystemRequestLabel.text = [NSString stringWithFormat:@"fileName ---- %@  systemRequest.requestType ----- %@",fileName,systemRequest.requestType];
-//
-//    
-//    [proxyManager.sdlManager sendRequest:systemRequest];
-//    
-//    
-//    
-//    
-//    
 //    [proxyManager.sdlManager sendRequest:systemRequest withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-//        
-//        self.onSystemRequestLabel.text = [NSString stringWithFormat:@"%@ - %@ - %@",response.correlationID,response.resultCode,response.info];
+//        //self.onSystemRequestLabel.text = [NSString stringWithFormat:@"%@ - %@ - %@",response.correlationID,response.resultCode,response.info];
 //        if ([response.resultCode isEqualToEnum:[SDLResult SUCCESS]]) {
 //            systemRequestState = @"systemRequest返回结果：成功";
 //        }else{
@@ -183,7 +186,7 @@
 //        }
 //        self.systemRequestLabel.text = systemRequestState;
 //    }];
-//
+
 }
 
 - (void)notifyOfNotification:(SDLRPCNotification *)notification {
@@ -299,9 +302,62 @@
 }
 
 - (void)aaManagerDidDisconnect{
-   self.onSystemRequestLabel.text = @"response";
+   self.onSystemRequestLabel.text = @"responseDelegate";
     
 }
+
+
+#pragma mark Lockscreen
+
+///**
+// *  Delegate method that runs when lockscreen status changes.
+// */
+//- (void)onOnLockScreenNotification:(SDLLockScreenStatus *)notification {
+//    NSLog(@"OnLockScreen notification from SDL");
+//
+//    // Notify the app delegate
+//    [self hsdl_postNotification:ASDLLockScreenStatusNotification info:notification];
+//   // [_aaSDLDelegate aaManagerDidDisconnect];
+//}
+//
+///**
+// *  Delegate method that runs when lockscreen status changes.
+// */
+- (void)onOnDriverDistraction:(SDLOnDriverDistraction *)notification{
+ self.onSystemRequestLabel.text = @"responseDrive";
+}
+
+- (void)onOnHMIStatus:(SDLOnHMIStatus *)notification{
+    self.onSystemRequestLabel.text = @"responseState";
+}
+
+- (void)onProxyClosed{
+ self.onSystemRequestLabel.text = @"responseClose";
+}
+
+- (void)onProxyOpened{
+     self.onSystemRequestLabel.text = @"responseOpen";
+}
+
+- (void)onOnSystemRequest:(SDLOnSystemRequest *)notification{
+    //    @property (strong) SDLRequestType *requestType;
+    //    @property (strong) NSString *url;
+    //    @property (strong) NSNumber *timeout;
+    //    @property (strong) SDLFileType *fileType;
+    //    @property (strong) NSNumber *offset;
+    //    @property (strong) NSNumber *length;
+    NSDictionary *dic = [AATool dictionaryWithData:notification.bulkData];
+    NSString *string = [AATool dictionaryToJson:dic];
+    //self.onSystemRequestLabel.text = [NSString stringWithFormat:@"%@ --- %@",@"onRequest",string];
+    
+    //self.onSystemRequestLabel.text = [NSString stringWithFormat:@"%@%@",notification.url,notification.bulkData];
+     self.onSystemRequestLabel.text = @"responseSystemRequest";
+}
+
+- (void)onPutFileResponse:(SDLPutFileResponse *)response{
+   self.onSystemRequestLabel.text = @"responseFile";
+}
+
 
 
 

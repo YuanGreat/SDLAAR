@@ -70,8 +70,10 @@ NSString * const disgnosticMode2 = @"Routine2";
         self.stopButton.enabled = NO;
         return;
     }
-    
-    
+    if (self.count == 1) {
+        self.pm = maxPM2;
+    }
+   
     //更新城市
     NSDictionary *dic = self.cityList[self.count];
     NSString *name_zh = dic[@"NAMECN"];
@@ -81,7 +83,6 @@ NSString * const disgnosticMode2 = @"Routine2";
     //app向sync端更新室外pm2.5值
     AAClimateModel *model = [[AAClimateModel alloc] init];
     if (self.count == 0) {
-        self.pm = maxPM2;
         model.diagnostic_state = @"0";  //initializing
         model.pm_type = @"1";  //PM2.5
         model.exterior_pm_value = @"";
@@ -94,9 +95,21 @@ NSString * const disgnosticMode2 = @"Routine2";
         model.cityname_zh = name_zh;
         model.pm_type = @"1";  //PM2.5
     }
-    [self uploadAARJSONByModel:model];
+    AADataModel *dataModel = [[AADataModel alloc] init];
+    NSArray *array = [AATool currentTime];
+    dataModel.date = array[0];
+    dataModel.time = array[1];
+    dataModel.exterior_PM_value = model.exterior_pm_value;
+    dataModel.exrerior_PM_diagnostic_state = model.diagnostic_state;
+    dataModel.cabin_PM_value = @"X";
+    dataModel.cabin_PM_diagnostic_state = @"X";
+    dataModel.sending_side = @"tx";
+    dataModel.ifOpen = @"NO";
+    [self.dataList addObject:dataModel];
+    [self showtableViewByModel:dataModel];
     
-    self.climateModel = model;
+     //上传数据
+    [self uploadAARJSONByModel:model];
     [self showPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",(long)self.pm]];
     NSLog(@"self.pm before---------- %ld",(long)self.pm);
     NSLog(@"self.pm after ---------- %ld",(long)self.pm);
@@ -121,9 +134,14 @@ NSString * const disgnosticMode2 = @"Routine2";
 
 - (void)saveRoutineData{
     //保存sync端向app发送过来的数据
-    
-    
-    
+    if (self.dataList.count > 0) {
+        AADataModel *model = self.dataList[0];
+        NSString *appName = [NSString stringWithFormat:@"%@_%@_%@",disgnosticMode2,model.date,model.time];
+        AATool *tool = [[AATool alloc] init];
+        NSLog(@"appName ---------- %@",appName);
+        NSString *name = [appName stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
+        [tool exportCSV:self.dataList byName:name];
+    }
 }
 
 - (void)stopRoutine{

@@ -43,9 +43,7 @@
             NSArray *pathArr=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
             NSString *strPath=[pathArr lastObject];
             NSString *strFinalPath=[NSString stringWithFormat:@"%@/%@.txt",strPath,fileName];
-            
             NSString *fileString = [NSString stringWithContentsOfFile:strFinalPath encoding:NSUTF8StringEncoding error:nil];
-            NSLog(@"name ------  %@  fileString ------- %@",fileName,fileString);
             NSDictionary *dic = [NSDictionary dictionaryWithObject:fileString forKey:fileName];
             NSLog(@"fileName ------  %@  fileString ------- %@",fileName,fileString);
             [self.historyDataList addObject:dic];
@@ -97,6 +95,7 @@
         model.exrerior_PM_diagnostic_state = valueArray[3];
         model.cabin_PM_value = valueArray[4];
         model.cabin_PM_diagnostic_state = valueArray[5];
+        model.sending_side = valueArray[6];
         model.ifOpen = @"NO";
         [dataArray addObject:model];
     }

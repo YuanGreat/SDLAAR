@@ -9,7 +9,6 @@
 
 + (SDLRequestType *)valueOf:(NSString *)value;
 + (NSArray *)values;
-
 + (SDLRequestType *)HTTP;
 + (SDLRequestType *)FILE_RESUME;
 + (SDLRequestType *)AUTH_REQUEST;

@@ -102,16 +102,15 @@
 
 - (void)exportCSV:(NSArray *)logArray byName:(NSString *)fileName{
    NSLog(@"appName ---------- %@",fileName);
-    
     NSMutableString *writeStr = [NSMutableString stringWithCapacity:0];
     for (int i = 0; i < logArray.count; i++) {
         AADataModel *model = logArray[i];
         if (i == 0) {
-            NSString *log = [NSString stringWithFormat:@"%@,%@,%@,%@,%@,%@",@"date",@"time",@"exterior PM value",@"exrerior PM diagnostic state",@"cabin PM value",@"cabin PM diagnostic state"];
+            NSString *log = [NSString stringWithFormat:@"%@,%@,%@,%@,%@,%@,%@",@"date",@"time",@"exterior PM value",@"exrerior PM diagnostic state",@"cabin PM value",@"cabin PM diagnostic state",@"sending side"];
             [writeStr appendString:[NSString stringWithFormat:@"%@ \n",log]];
         }
-        NSString *log = [NSString stringWithFormat:@"%@,%@,%@,%@,%@,%@",model.date,model.time,model.exterior_PM_value,model.exrerior_PM_diagnostic_state,model.cabin_PM_value,model.cabin_PM_diagnostic_state];
-        [writeStr appendString:[NSString stringWithFormat:@"%@ \n",log]];     
+        NSString *log = [NSString stringWithFormat:@"%@,%@,%@,%@,%@,%@,%@",model.date,model.time,model.exterior_PM_value,model.exrerior_PM_diagnostic_state,model.cabin_PM_value,model.cabin_PM_diagnostic_state,model.sending_side];
+        [writeStr appendString:[NSString stringWithFormat:@"%@\n",log]];
     }
 //
 //    for (AADataModel *model in logArray) {
@@ -140,9 +139,7 @@
         //判断之前有无存储过同样的记录
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         NSArray *array = [userDefaults arrayForKey:KUserDefaultFileName];
-        
         NSLog(@"array ------- %@",array);
-        
         NSMutableArray *arrayAfter = [[NSMutableArray alloc] initWithArray:array];
         if (array.count == 0) {
              [arrayAfter addObject:fileName];
@@ -352,7 +349,6 @@ NSString *contentString =[contents stringByTrimmingCharactersInSet:[NSCharacterS
 
 NSArray *contentsArray = [contentString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 
-
 NSLog(@"contents  -----------  %@",contents);
 NSLog(@"contentString  -----------  %@",contentString);
 NSLog(@"contentsArray  -----------  %@",contentsArray);
@@ -390,7 +386,29 @@ NSLog(@"路径  %@",docs);
 
 
 
-
++ (NSString*)convertToJSONData:(id)infoDict
+{
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:infoDict
+                                                       options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about the readability of the generated string
+                                                         error:&error];
+    
+    NSString *jsonString = @"";
+    
+    if (! jsonData)
+    {
+        NSLog(@"Got an error: %@", error);
+    }else
+    {
+        jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }
+    
+    jsonString = [jsonString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];  //去除掉首尾的空白字符和换行字符
+    
+    [jsonString stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    
+    return jsonString;
+}
 
 
 

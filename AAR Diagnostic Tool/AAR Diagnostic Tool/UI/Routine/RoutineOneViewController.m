@@ -13,9 +13,9 @@
 #import "ADConstants.h"
 #import "UIColor+PMColors.h"
 #import "SmartDeviceLink.h"
-#import "ProxyManager.h"
+#import "ProxyManager.h"           
 
-NSInteger const refreshTime = 30;   //刷新时间
+NSInteger const refreshTime = 5;   //刷新时间
 NSInteger const transmissionRate = 25;  //增减幅度
 NSInteger const maxPM = 300;   //PM2.5最大值
 NSInteger const minPM = 0;  //PM2.5最小值
@@ -53,7 +53,6 @@ NSString * const disgnosticMode = @"Routine1";
     [self showPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",(long)self.pm]];
 }
 
-
 #pragma mark routineDelegate
 - (void)startRoutine{
     self.count = 0;
@@ -85,6 +84,9 @@ NSString * const disgnosticMode = @"Routine1";
     else if (self.circleTime == 2 || self.circleTime == 4) {
         self.pm = self.pm + transmissionRate;
     }
+    if (self.count == 1) {
+        self.pm = maxPM;
+    }
     
    //更新城市
     NSDictionary *dic = self.cityList[self.count];
@@ -95,12 +97,12 @@ NSString * const disgnosticMode = @"Routine1";
     //app向sync端更新室外pm2.5值
    AAClimateModel *model = [[AAClimateModel alloc] init];
     if (self.count == 0) {
-        self.pm = maxPM;
         model.diagnostic_state = @"0";  //initializing
         model.pm_type = @"1";  //PM2.5
         model.exterior_pm_value = @"";
         model.cityname_en = @"";
         model.cityname_zh = @"";
+        
     }else{
     model.exterior_pm_value = [NSString stringWithFormat:@"%ld",(long)self.pm];
     model.diagnostic_state = @"2";  //No Issue
@@ -108,9 +110,21 @@ NSString * const disgnosticMode = @"Routine1";
     model.cityname_zh = name_zh;
     model.pm_type = @"1";  //PM2.5
     }
-    [self uploadAARJSONByModel:model];
+    AADataModel *dataModel = [[AADataModel alloc] init];
+    NSArray *array = [AATool currentTime];
+    dataModel.date = array[0];
+    dataModel.time = array[1];
+    dataModel.exterior_PM_value = model.exterior_pm_value;
+    dataModel.exrerior_PM_diagnostic_state = model.diagnostic_state;
+    dataModel.cabin_PM_value = @"X";
+    dataModel.cabin_PM_diagnostic_state = @"X";
+    dataModel.sending_side = @"tx";
+    dataModel.ifOpen = @"NO";
+    [self.dataList addObject:dataModel];
+    [self showtableViewByModel:dataModel];
     
-    self.climateModel = model;
+    //上传数据
+    [self uploadAARJSONByModel:model];
     [self showPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",(long)self.pm]];
    
     //记录循环次数
