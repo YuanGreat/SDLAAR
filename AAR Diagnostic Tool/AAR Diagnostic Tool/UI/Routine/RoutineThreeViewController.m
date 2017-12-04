@@ -51,6 +51,7 @@ NSString * const disgnosticMode3 = @"Routine3";
     self.count = 0;
     self.sendTime = 0;
     
+     [self refreshExterior];
     //每隔30S app端向sync端发送数据 每次增加或递减 25ug/m^3
     self.timer = [NSTimer scheduledTimerWithTimeInterval:refreshTime3 target:self selector:@selector(refreshExterior) userInfo:nil repeats:YES];
 }
@@ -66,7 +67,6 @@ NSString * const disgnosticMode3 = @"Routine3";
         self.stopButton.enabled = NO;
         return;
     }
-    
     //更新城市
     NSDictionary *dic = self.cityList[self.count];
     NSString *name_zh = dic[@"NAMECN"];

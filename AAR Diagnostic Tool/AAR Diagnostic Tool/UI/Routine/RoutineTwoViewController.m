@@ -54,6 +54,7 @@ NSString * const disgnosticMode2 = @"Routine2";
     self.count = 0;
     self.pm = maxPM2;
     
+     [self refreshExterior];
     //每隔30S app端向sync端发送数据 每次增加或递减 25ug/m^3
     self.timer = [NSTimer scheduledTimerWithTimeInterval:refreshTime2 target:self selector:@selector(refreshExterior) userInfo:nil repeats:YES];
 }
@@ -88,6 +89,7 @@ NSString * const disgnosticMode2 = @"Routine2";
         model.exterior_pm_value = @"";
         model.cityname_en = @"";
         model.cityname_zh = @"";
+        self.pm = maxPM2;       
     }else{
         model.exterior_pm_value = [NSString stringWithFormat:@"%ld",(long)self.pm];
         model.diagnostic_state = @"2";  //No Issue

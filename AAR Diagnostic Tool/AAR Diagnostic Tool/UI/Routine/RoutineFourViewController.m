@@ -53,6 +53,7 @@ NSString * const disgnosticMode4 = @"Routine4";
     self.count = 0;
     self.sendTime = 0;
     
+     [self refreshExterior];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:refreshTime4 target:self selector:@selector(refreshExterior) userInfo:nil repeats:YES];
 }
 
