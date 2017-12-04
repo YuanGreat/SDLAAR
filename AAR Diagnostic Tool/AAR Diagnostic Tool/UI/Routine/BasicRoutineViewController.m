@@ -214,8 +214,7 @@
 }
 
 - (BOOL)uploadAARJSONByModel:(AAClimateModel *)model{
-    __block NSString *putFileState;
-   // __block NSString *systemRequestState;
+    __block BOOL ifSuccess = NO;
     NSData *fileData = [AATool dataWithClimateModel:model];
     NSString *fileName = [NSString stringWithFormat:@"%ld",(long)self.fileName];;
     ProxyManager *proxyManager = [ProxyManager sharedManager];
@@ -225,28 +224,19 @@
     putFile.fileType = [SDLFileType JSON];
     putFile.systemFile = @(NO);
     putFile.persistentFile = @(NO);
-    __block BOOL ifSuccess = NO;
-    [proxyManager.sdlManager sendRequest:putFile withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-        NSLog(@"responseClass ----  ····%@", NSStringFromClass([response class]));
-        
+    [proxyManager.sdlManager sendRequest:putFile
+                     withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
         if ([response.resultCode isEqualToEnum:[SDLResult SUCCESS]]) {
-            putFileState = [NSString stringWithFormat:@"putFile返回结果：成功 fileName ---- %@ ",fileName];
             SDLSystemRequest *systemRequest = [[SDLSystemRequest alloc] init];
             systemRequest.requestType = [SDLRequestType CLIMATE];
             systemRequest.fileName = fileName;
-            [proxyManager.sdlManager sendRequest:systemRequest];
-//            [proxyManager.sdlManager sendRequest:systemRequest withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-//                
-//                if ([response.resultCode isEqualToEnum:[SDLResult SUCCESS]]) {
-//                    ifSuccess = YES;
-//                }else{
-//                    
-//                }
-//               
-//            }];
-        }else{
-            putFileState = @"putFile返回结果：失败";
-        }
+            [proxyManager.sdlManager sendRequest:systemRequest
+                             withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+                if ([response.resultCode isEqualToEnum:[SDLResult SUCCESS]]) {
+                    ifSuccess = YES;
+                }else{}
+            }];
+        }else{}
         if (self.fileName == 10) {
             self.fileName = 1;
         }else{

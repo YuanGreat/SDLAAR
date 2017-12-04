@@ -15,7 +15,7 @@
 #import "SmartDeviceLink.h"
 #import "ProxyManager.h"           
 
-NSInteger const refreshTime = 5;   //刷新时间
+NSInteger const refreshTime = 30;   //刷新时间
 NSInteger const transmissionRate = 25;  //增减幅度
 NSInteger const maxPM = 300;   //PM2.5最大值
 NSInteger const minPM = 0;  //PM2.5最小值

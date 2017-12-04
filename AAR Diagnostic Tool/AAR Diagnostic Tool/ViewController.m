@@ -60,6 +60,10 @@
     if (notification && notification.userInfo) {
         systemNotification = notification.userInfo[SDLNotificationUserInfoObject];
     }
+    
+    
+    self.onSystemRequestLabel.text = [NSString stringWithFormat:@"count --- %ld",(long)self.count];
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([systemNotification.requestType isEqualToEnum:[SDLRequestType CLIMATE]]) {
             if (systemNotification.bulkData) {
@@ -67,8 +71,6 @@
                 //接收sync端返回app车内pm2.5值
                 AADataModel *dataModel = [[AADataModel alloc] init];
                 NSArray *array = [AATool currentTime];
-                
-                
                 
                 NSString *cabin_pm_value = dic[@"cabin_pm_value"];
                 NSString *diagnostic_state = dic[@"diagnostic_state"];
@@ -171,21 +173,6 @@
             self.fileNameCount += 1;
         }
     }];
-    
-    
-
-//    SDLSystemRequest *systemRequest = [[SDLSystemRequest alloc] init];
-//    systemRequest.requestType = [SDLRequestType CLIMATE];
-//    systemRequest.fileName = fileName;
-//    [proxyManager.sdlManager sendRequest:systemRequest withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-//        //self.onSystemRequestLabel.text = [NSString stringWithFormat:@"%@ - %@ - %@",response.correlationID,response.resultCode,response.info];
-//        if ([response.resultCode isEqualToEnum:[SDLResult SUCCESS]]) {
-//            systemRequestState = @"systemRequest返回结果：成功";
-//        }else{
-//            systemRequestState = @"systemRequest返回结果：失败 ";
-//        }
-//        self.systemRequestLabel.text = systemRequestState;
-//    }];
 
 }
 
