@@ -13,7 +13,7 @@
 #import "ADConstants.h"
 #import "UIColor+PMColors.h"
 
-NSInteger const refreshTime4 = 30;   //刷新时间
+NSInteger const refreshTime4 = 3;   //刷新时间
 NSInteger const transmissionRate4 = 3;  //增减幅度
 NSInteger const sendPM4 = 50;   //PM2.5稳定发送值
 NSString * const disgnosticMode4 = @"Routine4";
@@ -42,7 +42,7 @@ NSString * const disgnosticMode4 = @"Routine4";
     self.navigationItem.title = @"Routine 4";
     self.routineDelegate = self;
     
-    [self showPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",(long)sendPM4]];
+  //  [self showExteriorPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",(long)sendPM4]];
 }
 
 #pragma mark routineDelegate
@@ -80,17 +80,17 @@ NSString * const disgnosticMode4 = @"Routine4";
     if (self.count == 0) {
         model.diagnostic_state = @"0";  //initializing
         model.pm_type = @"1";  //PM2.5
-        model.exterior_pm_value = @"";
+        model.exterior_pm_value = @"1000";
         model.cityname_en = @"";
         model.cityname_zh = @"";
-    }else if(self.count % 3 == 1){
+    }else if(self.count % 2 == 1){
         model.exterior_pm_value = [NSString stringWithFormat:@"%ld",(long)sendPM4];
         model.diagnostic_state = @"2";  //No Issue
         model.cityname_en = name_en;
         model.cityname_zh = name_zh;
         model.pm_type = @"1";  //PM2.5
     }else{
-        model.exterior_pm_value = [NSString stringWithFormat:@"%ld",(long)sendPM4];
+        model.exterior_pm_value = @"1000";
         model.diagnostic_state = @"1";  //Blank the Fiel
         model.cityname_en = @"";
         model.cityname_zh = @"";
@@ -107,11 +107,10 @@ NSString * const disgnosticMode4 = @"Routine4";
     dataModel.sending_side = @"tx";
     dataModel.ifOpen = @"NO";
     [self.dataList addObject:dataModel];
-    [self showtableViewByModel:dataModel];
-    
+ 
     //上传数据
     [self uploadAARJSONByModel:model];
-    [self showPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",(long)sendPM4]];
+    [self showExteriorPMLabelAndColorThresholdByPM:model.exterior_pm_value];
     
     //模拟接收sync端返回车内pm2.5值
 //    AADataModel *dataModel = [[AADataModel alloc] init];

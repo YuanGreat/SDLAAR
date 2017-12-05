@@ -54,7 +54,7 @@
     self.labelExterior = [myUtil drawLableInRect:CGRectMake(width - 30, 210, 60, 40) withNumber:@""];
     [self.view addSubview:self.labelExterior];
     
-    self.circleCarbin = [myUtil drawCirleLayerInRect:CGRectMake(width * 3 - 40, 190, 80, 80) byColor:[UIColor levelSixColor]];
+    self.circleCarbin = [myUtil drawCirleLayerInRect:CGRectMake(width * 3 - 40, 190, 80, 80) byColor:[UIColor levelOneColor]];
     [self.view.layer addSublayer:self.circleCarbin];
     self.labelCarbin = [myUtil drawLableInRect:CGRectMake(width * 3 - 30, 210 ,60, 40) withNumber:@""];
     [self.view addSubview:self.labelCarbin];
@@ -104,7 +104,7 @@
                 dataModel.sending_side = @"rx";
                 dataModel.ifOpen = @"NO";
                 [self.dataList addObject:dataModel];
-                [self showtableViewByModel:dataModel];
+                [self showCarbinPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%@",dataModel.cabin_PM_value]];
             }
         }
     });
@@ -187,31 +187,51 @@
 }
 
 #pragma mark method
-- (void)showPMLabelAndColorThresholdByPM:(NSString *)pm{
+- (void)showExteriorPMLabelAndColorThresholdByPM:(NSString *)pm{
     AATool *tool = [[AATool alloc] init];
     UIColor *cirleColor = [tool colorRangeByPM:pm];
     [self.circleExterior setStrokeColor:[cirleColor CGColor]];
-    self.labelExterior.text = pm;
+    if (pm.intValue > 999 || pm.intValue == 999) {
+        self.labelExterior.text = @"999+";
+    }else{
+        self.labelExterior.text = pm;
+    }
+    [self.dataTable reloadData];
 }
 
-- (void)showtableViewByModel:(AADataModel *)model{
+- (void)showCarbinPMLabelAndColorThresholdByPM:(NSString *)pm{
     AATool *tool = [[AATool alloc] init];
-    UIColor *cirleColor = [tool colorRangeByPM:model.exterior_PM_value];
-    [self.circleExterior setStrokeColor:[cirleColor CGColor]];
-    self.labelExterior.text = model.exterior_PM_value;
-    
-    UIColor *cirleColor2 = [tool colorRangeByPM:model.cabin_PM_value];
+    UIColor *cirleColor2 = [tool colorRangeByPM:pm];
     [self.circleCarbin setStrokeColor:[cirleColor2 CGColor]];
-    if (model.cabin_PM_value.floatValue > 500) {
+    if (pm.floatValue > 500) {
         self.labelCarbin.text = @"500+";
-    }else if (model.cabin_PM_value.floatValue < 0){
+    }else if (pm.floatValue < 0){
         self.labelCarbin.text = @"Blank the Field";
     }else{
-         self.labelCarbin.text = model.cabin_PM_value;
+        self.labelCarbin.text = pm;
     }
     NSLog(@"self.list----------- %ld",self.dataList.count);
     [self.dataTable reloadData];
 }
+
+//- (void)showtableViewByModel:(AADataModel *)model{
+//    AATool *tool = [[AATool alloc] init];
+//    UIColor *cirleColor = [tool colorRangeByPM:model.exterior_PM_value];
+//    [self.circleExterior setStrokeColor:[cirleColor CGColor]];
+//    self.labelExterior.text = model.exterior_PM_value;
+//    
+//    UIColor *cirleColor2 = [tool colorRangeByPM:model.cabin_PM_value];
+//    [self.circleCarbin setStrokeColor:[cirleColor2 CGColor]];
+//    if (model.cabin_PM_value.floatValue > 500) {
+//        self.labelCarbin.text = @"500+";
+//    }else if (model.cabin_PM_value.floatValue < 0){
+//        self.labelCarbin.text = @"Blank the Field";
+//    }else{
+//         self.labelCarbin.text = model.cabin_PM_value;
+//    }
+//    NSLog(@"self.list----------- %ld",self.dataList.count);
+//    [self.dataTable reloadData];
+//}
 
 - (BOOL)uploadAARJSONByModel:(AAClimateModel *)model{
     __block BOOL ifSuccess = NO;

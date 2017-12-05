@@ -56,9 +56,11 @@
 + (NSArray *)currentTime;
 
 /**
- *  诊断状态显示
+ *  诊断状态显示 室外/室内
  */
-+ (NSString *)diagnosticStateByCode:(NSString *)code;
++ (NSString *)diagnosticExteriorStateByCode:(NSString *)code;
++ (NSString *)diagnosticCabinStateByCode:(NSString *)code;
+
 
 /**
  *  csv writer 初始化

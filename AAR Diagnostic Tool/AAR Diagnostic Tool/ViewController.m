@@ -43,7 +43,7 @@
     // Observe Proxy Manager state
     [[ProxyManager sharedManager] addObserver:self forKeyPath:NSStringFromSelector(@selector(state)) options:(NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew) context:nil];
     self.fileNameCount = 1;
-    [self registerForNotifications];
+  //  [self registerForNotifications];
     self.proxyListener = self;
     self.count = 0;
 }
@@ -60,8 +60,7 @@
     if (notification && notification.userInfo) {
         systemNotification = notification.userInfo[SDLNotificationUserInfoObject];
     }
-    
-    
+
     self.onSystemRequestLabel.text = [NSString stringWithFormat:@"count --- %ld",(long)self.count];
     
     dispatch_async(dispatch_get_main_queue(), ^{

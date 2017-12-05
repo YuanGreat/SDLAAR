@@ -43,7 +43,7 @@ NSString * const disgnosticMode2 = @"Routine2";
     self.navigationItem.title = @"Routine 2";
     self.routineDelegate = self;
     self.pm = maxPM2;
-    [self showPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",(long)self.pm]];
+   // [self showExteriorPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",(long)self.pm]];
 }
 
 #pragma mark routineDelegate
@@ -86,7 +86,7 @@ NSString * const disgnosticMode2 = @"Routine2";
     if (self.count == 0) {
         model.diagnostic_state = @"0";  //initializing
         model.pm_type = @"1";  //PM2.5
-        model.exterior_pm_value = @"";
+        model.exterior_pm_value = @"1000";
         model.cityname_en = @"";
         model.cityname_zh = @"";
         self.pm = maxPM2;       
@@ -108,11 +108,10 @@ NSString * const disgnosticMode2 = @"Routine2";
     dataModel.sending_side = @"tx";
     dataModel.ifOpen = @"NO";
     [self.dataList addObject:dataModel];
-    [self showtableViewByModel:dataModel];
-    
+  
      //上传数据
     [self uploadAARJSONByModel:model];
-    [self showPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",(long)self.pm]];
+    [self showExteriorPMLabelAndColorThresholdByPM:model.exterior_pm_value];
     NSLog(@"self.pm before---------- %ld",(long)self.pm);
     NSLog(@"self.pm after ---------- %ld",(long)self.pm);
     

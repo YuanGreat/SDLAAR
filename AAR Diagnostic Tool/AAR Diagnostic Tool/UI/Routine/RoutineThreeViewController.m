@@ -39,8 +39,8 @@ NSString * const disgnosticMode3 = @"Routine3";
     [super viewDidLoad];
     self.navigationItem.title = @"Routine 3";
     self.routineDelegate = self;
-    
-    [self showPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",sendPM3]];
+      //  [self showExteriorPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",sendPM3]];
+ 
 }
 
 #pragma mark routineDelegate
@@ -52,7 +52,7 @@ NSString * const disgnosticMode3 = @"Routine3";
     self.sendTime = 0;
     
      [self refreshExterior];
-    //每隔30S app端向sync端发送数据 每次增加或递减 25ug/m^3
+    //每隔30S app端向sync端发送数据 每次发送数据为50ug/m^3
     self.timer = [NSTimer scheduledTimerWithTimeInterval:refreshTime3 target:self selector:@selector(refreshExterior) userInfo:nil repeats:YES];
 }
 
@@ -99,12 +99,11 @@ NSString * const disgnosticMode3 = @"Routine3";
     dataModel.sending_side = @"tx";
     dataModel.ifOpen = @"NO";
     [self.dataList addObject:dataModel];
-    [self showtableViewByModel:dataModel];
-    
+   
     
     //上传数据
     [self uploadAARJSONByModel:model];
-    [self showPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",sendPM3]];
+    [self showExteriorPMLabelAndColorThresholdByPM:model.exterior_pm_value];
     
     //模拟接收sync端返回车内pm2.5值
 //    AADataModel *dataModel = [[AADataModel alloc] init];

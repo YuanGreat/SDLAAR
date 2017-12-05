@@ -34,9 +34,9 @@
 
 - (void)configureCellByModel:(AADataModel *)model{
     self.exteriorValueLabel.text = [NSString stringWithFormat:@"Exterior PM Value: %@",model.exterior_PM_value];
- self.exteriorStateLabel.text = [NSString stringWithFormat:@"Exterior PM Diagnostic State: %@",[AATool diagnosticStateByCode:model.exrerior_PM_diagnostic_state]];
+ self.exteriorStateLabel.text = [NSString stringWithFormat:@"Exterior PM Diagnostic State: %@",[AATool diagnosticExteriorStateByCode:model.exrerior_PM_diagnostic_state]];
     self.cabinValueLabel.text = [NSString stringWithFormat:@"Cabin PM Value: %@",model.cabin_PM_value];
-    self.cabinStateLabel.text = [NSString stringWithFormat:@"Cabin PM Diagnostic State: %@",[AATool diagnosticStateByCode:model.cabin_PM_diagnostic_state]];
+    self.cabinStateLabel.text = [NSString stringWithFormat:@"Cabin PM Diagnostic State: %@",[AATool diagnosticCabinStateByCode:model.cabin_PM_diagnostic_state]];
     
 }
 

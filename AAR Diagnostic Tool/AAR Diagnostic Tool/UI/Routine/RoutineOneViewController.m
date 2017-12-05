@@ -50,7 +50,7 @@ NSString * const disgnosticMode = @"Routine1";
     self.navigationItem.title = @"Routine 1";
     self.routineDelegate = self;
     self.pm = maxPM;
-    [self showPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",(long)self.pm]];
+   //  [self showExteriorPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",(long)self.pm]];
 }
 
 #pragma mark routineDelegate
@@ -76,7 +76,6 @@ NSString * const disgnosticMode = @"Routine1";
         self.stopButton.enabled = NO;
         return;
     }
-
     //模拟递减
     if (self.circleTime == 1 || self.circleTime == 3) {
         self.pm = self.pm - transmissionRate;
@@ -100,7 +99,7 @@ NSString * const disgnosticMode = @"Routine1";
     if (self.count == 0) {
         model.diagnostic_state = @"0";  //initializing
         model.pm_type = @"1";  //PM2.5
-        model.exterior_pm_value = @"";
+        model.exterior_pm_value = @"1000";
         model.cityname_en = @"";
         model.cityname_zh = @"";
          self.pm = maxPM;
@@ -122,11 +121,11 @@ NSString * const disgnosticMode = @"Routine1";
     dataModel.sending_side = @"tx";
     dataModel.ifOpen = @"NO";
     [self.dataList addObject:dataModel];
-    [self showtableViewByModel:dataModel];
+
     
     //上传数据
     [self uploadAARJSONByModel:model];
-    [self showPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%ld",(long)self.pm]];
+    [self showExteriorPMLabelAndColorThresholdByPM:model.exterior_pm_value];
    
     //记录循环次数
     if (self.pm == 0) {

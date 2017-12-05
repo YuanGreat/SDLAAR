@@ -54,12 +54,16 @@
 /**
  *  阀值颜色
  */
-- (void)showPMLabelAndColorThresholdByPM:(NSString *)pm ;
+//- (void)showPMLabelAndColorThresholdByPM:(NSString *)pm ;
 
 /**
  *  展示空气数据信息
  */
-- (void)showtableViewByModel:(AADataModel *)model;
+//- (void)showtableViewByModel:(AADataModel *)model;
+- (void)showExteriorPMLabelAndColorThresholdByPM:(NSString *)pm;
+- (void)showCarbinPMLabelAndColorThresholdByPM:(NSString *)pm;
+
+
 
 /**
  *  开始发送与结束发送数据

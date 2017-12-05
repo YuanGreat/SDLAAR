@@ -55,14 +55,14 @@
     self.secondLabel.text = [NSString stringWithFormat:@"Time: %@",model.time];
     if ([model.sending_side isEqualToString:@"rx"]) {
         self.exteriorValueLabel.text = [NSString stringWithFormat:@"Cabin PM Value: %@",model.cabin_PM_value];
-        self.exteriorStateLabel.text = [NSString stringWithFormat:@"Cabin PM Diagnostic State: %@",[AATool diagnosticStateByCode:model.cabin_PM_diagnostic_state]];
+        self.exteriorStateLabel.text = [NSString stringWithFormat:@"Cabin PM Diagnostic State: %@",[AATool diagnosticCabinStateByCode:model.cabin_PM_diagnostic_state]];
         self.typeLabel.text = @"rx";
         self.cellColorView.backgroundColor = [UIColor rxCellColor];
         
     }
     if ([model.sending_side isEqualToString:@"tx"]){
         self.exteriorValueLabel.text = [NSString stringWithFormat:@"Exterior PM Value: %@",model.exterior_PM_value];
-        self.exteriorStateLabel.text = [NSString stringWithFormat:@"Exterior PM Diagnostic State: %@",[AATool diagnosticStateByCode:model.exrerior_PM_diagnostic_state]];
+        self.exteriorStateLabel.text = [NSString stringWithFormat:@"Exterior PM Diagnostic State: %@",[AATool diagnosticExteriorStateByCode:model.exrerior_PM_diagnostic_state]];
         self.typeLabel.text = @"tx";
         self.cellColorView.backgroundColor = [UIColor txCellColor];
     }

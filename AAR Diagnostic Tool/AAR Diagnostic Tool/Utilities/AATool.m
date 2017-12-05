@@ -224,7 +224,7 @@
     return dateArray;
 }
 
-+ (NSString *)diagnosticStateByCode:(NSString *)code{
++ (NSString *)diagnosticExteriorStateByCode:(NSString *)code{
     NSString *stateString;
     switch (code.intValue) {
         case 0:{
@@ -244,6 +244,48 @@
     }
     return stateString;
 }
+
++ (NSString *)diagnosticCabinStateByCode:(NSString *)code{
+    NSString *stateString;
+    switch (code.intValue) {
+        case 0:{
+            stateString = @"Initializing";
+        }
+            break;
+        case 1:{
+            stateString = @"Unsupported";
+        }
+            break;
+        case 2:{
+            stateString = @"Clean the Sensor";
+        }
+            break;
+        case 3:{
+            stateString = @"Replace the Sensor";
+        }
+            break;
+        case 4:{
+            stateString = @"Blank the Field";
+        }
+            break;
+        case 5:{
+            stateString = @"No Issue";
+        }
+            break;
+        case 6:{
+            stateString = @"Not Used";
+        }
+            break;
+        case 7:{
+            stateString = @"Not Used";
+        }
+            break;
+        default:
+            break;
+    }
+    return stateString;
+}
+
 
 //-(void)writeDict:(NSDictionary *)dict forFirst:(BOOL)first{
 //
