@@ -12,5 +12,6 @@
 
 extern NSString * const KRoutineRunTime;
 extern NSString * const KUserDefaultFileName;
+extern NSMutableArray *kCabinArray;
 
 @end

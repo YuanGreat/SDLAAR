@@ -167,21 +167,48 @@
 }
 
 - (UIColor *)colorRangeByPM:(NSString *)pm{
- 
- NSString *pmString = [self stringByNotRounding:pm.doubleValue afterPoint:1];
+    NSString *pmString = [self stringByNotRounding:pm.doubleValue afterPoint:1];
     NSLog(@"pm %@  pmFloat %f pmString%d",pm,pm.floatValue,pm.intValue);
     UIColor *color ;
-    if (pmString.intValue >= 0 && pmString.intValue <= 35) {
+    
+    NSMutableArray *pmArray = [@[@"35",@"75",@"115",@"150",@"250",@"500"] mutableCopy];
+    
+    if (kCabinArray.count == 4) {
+        NSString *pmString = kCabinArray[2];
+        NSArray *array = [pmString componentsSeparatedByString:@","];
+        if (array.count == 6) {
+            BOOL ifNumbersIncrease = YES;
+            for (int i = 0; i < array.count - 1; i ++) {
+                NSString *oneString = array[i];
+                NSString *twoString = array[i + 1];
+                if (oneString.intValue > twoString.intValue) {
+                    ifNumbersIncrease = NO;
+                }
+            }
+            if (ifNumbersIncrease) {
+                pmArray = [NSMutableArray arrayWithArray:array];
+            }
+        }
+    }
+    
+    NSString *one = pmArray[0];
+    NSString *two = pmArray[1];
+    NSString *three = pmArray[2];
+    NSString *four = pmArray[3];
+    NSString *five = pmArray[4];
+    NSString *six = pmArray[5];
+    
+    if (pmString.intValue >= 0 && pmString.intValue <= one.intValue) {
         color = [UIColor levelOneColor];
-    }else if (pmString.intValue >= 0 && pmString.intValue <= 35){
+    }else if (pmString.intValue > one.intValue && pmString.intValue <= two.intValue){
          color = [UIColor levelTwoColor];
-    }else if (pmString.intValue >= 36 && pmString.intValue <= 75){
+    }else if (pmString.intValue > two.intValue && pmString.intValue <= three.intValue){
         color = [UIColor levelThreeColor];
-    }else if (pmString.intValue >= 76 && pmString.intValue <= 115){
+    }else if (pmString.intValue > three.intValue && pmString.intValue <= four.intValue){
         color = [UIColor levelFourColor];
-    }else if (pmString.intValue >= 116 && pmString.intValue <= 150){
+    }else if (pmString.intValue > four.intValue && pmString.intValue <= five.intValue){
         color = [UIColor levelFiveColor];
-    }else if (pmString.intValue >= 151 && pmString.intValue <= 250){
+    }else if (pmString.intValue > five.intValue && pmString.intValue <= six.intValue){
         color = [UIColor levelSixColor];
     }else{
          color = [UIColor adGreyColor];
@@ -418,18 +445,13 @@ for (idx = 1; idx < contentsArray.count; idx++) {
     [dic setObject:[timeDataArr objectAtIndex:8] forKey:keyArr[8]];
     [arr addObject:dic];
 }
-[arr writeToFile:docs atomically:YES];
+    [arr writeToFile:docs atomically:YES];
 
-NSLog(@"写入文件  %@",arr);
-NSLog(@"路径  %@",docs);
+    NSLog(@"写入文件  %@",arr);
+    NSLog(@"路径  %@",docs);
 }
 
-
-
-
-
-+ (NSString*)convertToJSONData:(id)infoDict
-{
++ (NSString*)convertToJSONData:(id)infoDict{
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:infoDict
                                                        options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about the readability of the generated string
@@ -437,22 +459,34 @@ NSLog(@"路径  %@",docs);
     
     NSString *jsonString = @"";
     
-    if (! jsonData)
-    {
+    if (! jsonData){
         NSLog(@"Got an error: %@", error);
-    }else
-    {
+    }else{
         jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     }
-    
     jsonString = [jsonString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];  //去除掉首尾的空白字符和换行字符
-    
     [jsonString stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-    
     return jsonString;
 }
 
-
++ (BOOL)ifNullOrNilWithObject:(id)object{
+    if (object == nil || [object isEqual:[NSNull null]]) {
+        return YES;
+    } else if ([object isKindOfClass:[NSString class]]) {
+        if ([object isEqualToString:@""]) {
+            return YES;
+        } else {
+            return NO;
+        }
+    } else if ([object isKindOfClass:[NSNumber class]]) {
+        if ([object isEqualToNumber:@0]) {
+            return YES;
+        } else {
+            return NO;
+        }
+    }
+    return NO;
+}
 
 
 

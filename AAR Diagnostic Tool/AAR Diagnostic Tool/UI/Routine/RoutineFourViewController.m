@@ -13,7 +13,7 @@
 #import "ADConstants.h"
 #import "UIColor+PMColors.h"
 
-NSInteger const refreshTime4 = 3;   //刷新时间
+NSInteger const refreshTime4 = 30;   //刷新时间
 NSInteger const transmissionRate4 = 3;  //增减幅度
 NSInteger const sendPM4 = 50;   //PM2.5稳定发送值
 NSString * const disgnosticMode4 = @"Routine4";

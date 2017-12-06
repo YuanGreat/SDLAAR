@@ -17,6 +17,7 @@
 #import "SmartDeviceLink.h"
 #import "ProxyManager.h"
 #import "AAClimateModel.h"
+#import "ADConstants.h"
 
 @interface BasicRoutineViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -42,6 +43,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //上一次接收到的室内空气质量
+    NSString *cabin_pm_value;
+    NSString *diagnostic_state;
+    NSString *colorRange;
+    NSString *pm_type;
+    if (kCabinArray.count == 4) {
+        cabin_pm_value = kCabinArray[0];
+        diagnostic_state = kCabinArray[1];
+        colorRange = kCabinArray[2];
+        pm_type = kCabinArray[3];
+    }
+    
 //保存
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithTitle:@"save" style:UIBarButtonItemStylePlain target:self action:@selector(saveData)];
     self.navigationItem.rightBarButtonItem = saveButton;
@@ -57,6 +71,10 @@
     self.circleCarbin = [myUtil drawCirleLayerInRect:CGRectMake(width * 3 - 40, 190, 80, 80) byColor:[UIColor levelOneColor]];
     [self.view.layer addSublayer:self.circleCarbin];
     self.labelCarbin = [myUtil drawLableInRect:CGRectMake(width * 3 - 30, 210 ,60, 40) withNumber:@""];
+    if (![AATool ifNullOrNilWithObject:cabin_pm_value]) {
+        [self showCarbinPMLabelAndColorThresholdByPM:cabin_pm_value];
+    }
+ 
     [self.view addSubview:self.labelCarbin];
     
     //城市列表
@@ -69,7 +87,7 @@
     NSArray *contentArray = [NSArray arrayWithContentsOfFile:path];
     self.cityList = [NSMutableArray arrayWithArray:contentArray];
     
-    NSLog(@"contentArray  ------- %@",contentArray);
+    //NSLog(@"contentArray  ------- %@",contentArray);
     
     //初始化
     self.fileName = 1;
@@ -103,6 +121,9 @@
                 dataModel.cabin_PM_diagnostic_state = dic[@"diagnostic_state"];
                 dataModel.sending_side = @"rx";
                 dataModel.ifOpen = @"NO";
+                NSString *colorRange = dic[@"color_range_thresholds"];
+                kCabinArray = [NSMutableArray array];
+                kCabinArray = [@[dataModel.cabin_PM_value,dataModel.cabin_PM_diagnostic_state,dataModel.sending_side,colorRange] mutableCopy];
                 [self.dataList addObject:dataModel];
                 [self showCarbinPMLabelAndColorThresholdByPM:[NSString stringWithFormat:@"%@",dataModel.cabin_PM_value]];
             }

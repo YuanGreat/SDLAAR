@@ -86,14 +86,13 @@
  */
 -(void)writeDict:(NSDictionary *)dict forFirst:(BOOL)first;
 
-/**
- *  删除UserDefault文件
- */
 
 + (NSString*)convertToJSONData:(id)infoDict;
 
-
-
+/**
+ *  判断一个类是否为空
+ */
++ (BOOL)ifNullOrNilWithObject:(id)object;
 
 
 

@@ -118,7 +118,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)change:(NSNotification *)notification {
     // Delegate method to handle changes in lockscreen status
     NSLog(@"AppDelegate received didChangeLockScreenStatus notification: %@", notification);
-    [_aaSDLDelegate aaManagerDidDisconnect];
 }
 - (void)dealloc{
      [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -140,12 +139,7 @@ NS_ASSUME_NONNULL_BEGIN
         if ([weakSelf.sdlManager.hmiLevel isEqualToEnum:[SDLHMILevel FULL]]) {
             [weakSelf sdlex_showInitialData];
         }
-    }];
-    
-    
-    
-    
-    
+    }];  
 }
 
 - (void)reset {

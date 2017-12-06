@@ -6,7 +6,7 @@
 //  Copyright © 2017年 Ford. All rights reserved.
 //
 
-#import "ViewController.h"
+#import <UIKit/UIKit.h>
 
 @class AADataModel;
 @class AAClimateModel;
@@ -20,7 +20,7 @@
 
 @end
 
-@interface BasicRoutineViewController : ViewController<UITableViewDelegate,UITableViewDataSource,RoutineDelegate>
+@interface BasicRoutineViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,RoutineDelegate>
 
 @property (nonatomic,weak) id<RoutineDelegate> routineDelegate;
 
