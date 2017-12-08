@@ -87,11 +87,7 @@
 //        self.cabinValueLabel.hidden = YES;
 //        self.cabinStateLabel.hidden = YES;
         self.arrowImage.image = [UIImage imageNamed:@"arrowUp"];
-    }
-    
-    
- 
-    
+    }  
 }
 
 - (void)changeArrowWithUp:(BOOL)isOpen{

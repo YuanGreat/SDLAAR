@@ -81,10 +81,10 @@
             if (systemNotification.bulkData) {
                 NSDictionary *dic = [AATool dictionaryWithData:systemNotification.bulkData];
                 //接收sync端返回app车内pm2.5值
-                NSString *cabin_pm_value = dic[@"cabin_pm_value"];
-                NSString *diagnostic_state = dic[@"diagnostic_state"];
-                NSString *colorRange = dic[@"color_range_thresholds"];
-                NSString *pm_type = dic[@"pm_type"];
+                NSString *cabin_pm_value = [NSString stringWithFormat:@"%@",dic[@"cabin_pm_value"]];
+                NSString *diagnostic_state =  [NSString stringWithFormat:@"%@",dic[@"diagnostic_state"]];
+                NSString *colorRange =  [NSString stringWithFormat:@"%@",dic[@"color_range_thresholds"]];
+                NSString *pm_type =  [NSString stringWithFormat:@"%@",dic[@"pm_type"]];
                
                 kCabinArray = [NSMutableArray array];
                 kCabinArray = [@[cabin_pm_value,diagnostic_state,colorRange,pm_type ] mutableCopy];
@@ -121,11 +121,11 @@
     
     AAClimateModel *model = [[AAClimateModel alloc] init];
     
-    model.exterior_pm_value = @"78";
-    model.diagnostic_state = @"0";
+    model.exterior_pm_value = @78;
+    model.diagnostic_state = @0;
     model.cityname_en = @"shanghai";
     model.cityname_zh = @"shanghai";
-    model.pm_type = @"1";
+    model.pm_type = @1;
     
     NSData *fileData = [AATool dataWithClimateModel:model];
     

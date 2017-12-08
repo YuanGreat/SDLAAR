@@ -79,30 +79,31 @@ NSString * const disgnosticMode2 = @"Routine2";
     NSDictionary *dic = self.cityList[self.count];
     NSString *name_zh = dic[@"NAMECN"];
     NSString *name_en = dic[@"NAMEEN"];
-    self.cityLabel.text = [NSString stringWithFormat:@"%@ %@",name_zh,name_en];
+    self.englishCityLabel.text = name_en;
+    self.cityLabel.text = name_zh;
     
     //app向sync端更新室外pm2.5值
     AAClimateModel *model = [[AAClimateModel alloc] init];
     if (self.count == 0) {
-        model.diagnostic_state = @"0";  //initializing
-        model.pm_type = @"1";  //PM2.5
-        model.exterior_pm_value = @"1000";
+        model.diagnostic_state = @0;  //initializing
+        model.pm_type = @1;  //PM2.5
+        model.exterior_pm_value = @1000;
         model.cityname_en = @"";
         model.cityname_zh = @"";
         self.pm = maxPM2;       
     }else{
-        model.exterior_pm_value = [NSString stringWithFormat:@"%ld",(long)self.pm];
-        model.diagnostic_state = @"2";  //No Issue
+        model.exterior_pm_value = [NSNumber numberWithInteger:self.pm];
+        model.diagnostic_state = @2;  //No Issue
         model.cityname_en = name_en;
         model.cityname_zh = name_zh;
-        model.pm_type = @"1";  //PM2.5
+        model.pm_type = @1;  //PM2.5
     }
     AADataModel *dataModel = [[AADataModel alloc] init];
     NSArray *array = [AATool currentTime];
     dataModel.date = array[0];
     dataModel.time = array[1];
-    dataModel.exterior_PM_value = model.exterior_pm_value;
-    dataModel.exrerior_PM_diagnostic_state = model.diagnostic_state;
+    dataModel.exterior_PM_value = [NSString stringWithFormat:@"%@",model.exterior_pm_value];
+    dataModel.exrerior_PM_diagnostic_state = [NSString stringWithFormat:@"%@",model.diagnostic_state];
     dataModel.cabin_PM_value = @"X";
     dataModel.cabin_PM_diagnostic_state = @"X";
     dataModel.sending_side = @"tx";
@@ -111,7 +112,7 @@ NSString * const disgnosticMode2 = @"Routine2";
   
      //上传数据
     [self uploadAARJSONByModel:model];
-    [self showExteriorPMLabelAndColorThresholdByPM:model.exterior_pm_value];
+    [self showExteriorPMLabelAndColorThresholdByPM:dataModel.exterior_PM_value];
     NSLog(@"self.pm before---------- %ld",(long)self.pm);
     NSLog(@"self.pm after ---------- %ld",(long)self.pm);
     

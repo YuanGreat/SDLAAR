@@ -52,7 +52,7 @@
      NSLog(@"model ------- %@",model.exterior_pm_value);
   
     dic = [AATool entityToDictionary:model];
-     NSLog(@"modeldic ------- %@",dic);
+    NSLog(@"modeldic ------- %@",dic);
     NSError *parseError = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:&parseError];
     return jsonData;
@@ -145,7 +145,11 @@
              [arrayAfter addObject:fileName];
         }
         BOOL ifAlreadyHave = NO;
+        NSLog(@"array  %@",array);
+        
+        
         for (NSString *nameDefault in array) {
+            NSLog(@"nameDefault  %@",nameDefault);
             if ([nameDefault isEqualToString:fileName]) {
                 ifAlreadyHave = YES;
             }

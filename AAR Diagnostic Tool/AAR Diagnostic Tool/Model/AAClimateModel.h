@@ -10,10 +10,11 @@
 
 @interface AAClimateModel : NSObject
 
-@property (nonatomic, copy) NSString *exterior_pm_value;
-@property (nonatomic, copy) NSString *diagnostic_state;
+@property (nonatomic, copy) NSNumber *exterior_pm_value;
+@property (nonatomic, copy) NSNumber *diagnostic_state;
 @property (nonatomic, copy) NSString *cityname_en;
 @property (nonatomic, copy) NSString *cityname_zh;
-@property (nonatomic, copy) NSString *pm_type;
+@property (nonatomic, copy) NSString *cityname_ko;
+@property (nonatomic, copy) NSNumber *pm_type;
 
 @end

@@ -45,6 +45,7 @@
 //@property (nonatomic, strong) AAClimateModel *climateModel; //室外空气数据
 
 @property (weak, nonatomic) IBOutlet UILabel *cityLabel;
+@property (weak, nonatomic) IBOutlet UILabel *englishCityLabel;
 
 @property (nonatomic, assign) __block NSInteger fileName; //文件名
 

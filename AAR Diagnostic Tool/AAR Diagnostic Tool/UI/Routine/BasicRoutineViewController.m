@@ -18,6 +18,7 @@
 #import "ProxyManager.h"
 #import "AAClimateModel.h"
 #import "ADConstants.h"
+#import "MBManager.h"
 
 @interface BasicRoutineViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -63,14 +64,14 @@
 //test draw cirle
     myUtil = [[ADUtils alloc] init];
     CGFloat width = [UIScreen mainScreen].bounds.size.width / 4;
-    self.circleExterior = [myUtil drawCirleLayerInRect:CGRectMake(width - 40, 190, 80, 80) byColor:[UIColor levelOneColor]];
+    self.circleExterior = [myUtil drawCirleLayerInRect:CGRectMake(width - 40, 170, 80, 80) byColor:[UIColor levelOneColor]];
     [self.view.layer addSublayer:self.circleExterior];
-    self.labelExterior = [myUtil drawLableInRect:CGRectMake(width - 30, 210, 60, 40) withNumber:@""];
+    self.labelExterior = [myUtil drawLableInRect:CGRectMake(width - 30, 190, 60, 40) withNumber:@""];
     [self.view addSubview:self.labelExterior];
     
-    self.circleCarbin = [myUtil drawCirleLayerInRect:CGRectMake(width * 3 - 40, 190, 80, 80) byColor:[UIColor levelOneColor]];
+    self.circleCarbin = [myUtil drawCirleLayerInRect:CGRectMake(width * 3 - 40, 170, 80, 80) byColor:[UIColor levelOneColor]];
     [self.view.layer addSublayer:self.circleCarbin];
-    self.labelCarbin = [myUtil drawLableInRect:CGRectMake(width * 3 - 30, 210 ,60, 40) withNumber:@""];
+    self.labelCarbin = [myUtil drawLableInRect:CGRectMake(width * 3 - 30, 190 ,60, 40) withNumber:@""];
     if (![AATool ifNullOrNilWithObject:cabin_pm_value]) {
         [self showCarbinPMLabelAndColorThresholdByPM:cabin_pm_value];
     }
@@ -95,6 +96,13 @@
     [self registerForNotifications];
 }
 
+- (void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    //停止发送
+    [self.timer invalidate];
+    self.timer = nil;
+}
+
 - (void)registerForNotifications {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [center addObserver:self selector:@selector(recieveOnSystemRequest:) name:SDLDidReceiveSystemRequestNotification object:nil];
@@ -117,11 +125,11 @@
                 dataModel.time = array[1];
                 dataModel.exterior_PM_value = @"X";
                 dataModel.exrerior_PM_diagnostic_state = @"X";
-                dataModel.cabin_PM_value = dic[@"cabin_pm_value"];
-                dataModel.cabin_PM_diagnostic_state = dic[@"diagnostic_state"];
+                dataModel.cabin_PM_value =  [NSString stringWithFormat:@"%@",dic[@"cabin_pm_value"]];
+                dataModel.cabin_PM_diagnostic_state =  [NSString stringWithFormat:@"%@",dic[@"diagnostic_state"]];
                 dataModel.sending_side = @"rx";
                 dataModel.ifOpen = @"NO";
-                NSString *colorRange = dic[@"color_range_thresholds"];
+                NSString *colorRange =  [NSString stringWithFormat:@"%@",dic[@"color_range_thresholds"]];
                 kCabinArray = [NSMutableArray array];
                 kCabinArray = [@[dataModel.cabin_PM_value,dataModel.cabin_PM_diagnostic_state,dataModel.sending_side,colorRange] mutableCopy];
                 [self.dataList addObject:dataModel];
@@ -187,7 +195,7 @@
     AADataModel *dataModel = [[AADataModel alloc] init];
     dataModel = self.dataList[indexPath.row];
     [timeCell configureCellByModel:dataModel];
-    return timeCell;
+    return timeCell;                    
 }
 
 - (void)timeLabelSelected:(UIButton *)sender{
@@ -257,6 +265,7 @@
 - (BOOL)uploadAARJSONByModel:(AAClimateModel *)model{
     __block BOOL ifSuccess = NO;
     NSData *fileData = [AATool dataWithClimateModel:model];
+    NSLog(@"%@",[[NSString alloc]initWithData:fileData encoding:NSUTF8StringEncoding]);
     NSString *fileName = [NSString stringWithFormat:@"%ld",(long)self.fileName];;
     ProxyManager *proxyManager = [ProxyManager sharedManager];
     SDLPutFile *putFile = [[SDLPutFile alloc] init];
@@ -268,6 +277,7 @@
     [proxyManager.sdlManager sendRequest:putFile
                      withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
         if ([response.resultCode isEqualToEnum:[SDLResult SUCCESS]]) {
+            [MBManager showBriefAlert:@"putFlie success"];
             SDLSystemRequest *systemRequest = [[SDLSystemRequest alloc] init];
             systemRequest.requestType = [SDLRequestType CLIMATE];
             systemRequest.fileName = fileName;
@@ -275,9 +285,14 @@
                              withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
                 if ([response.resultCode isEqualToEnum:[SDLResult SUCCESS]]) {
                     ifSuccess = YES;
-                }else{}
+                    [MBManager showBriefAlert:@"response success"];
+                }else{
+                    [MBManager showBriefAlert:@"response fail"];
+                }
             }];
-        }else{}
+        }else{
+           [MBManager showBriefAlert:@"putFlie fail"];
+        }
         if (self.fileName == 10) {
             self.fileName = 1;
         }else{

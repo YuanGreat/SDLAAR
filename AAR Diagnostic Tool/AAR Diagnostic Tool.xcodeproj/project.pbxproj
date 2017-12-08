@@ -17,6 +17,8 @@
 		892FF6CB1FC50E0800278331 /* AAHistoryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 892FF6C91FC50E0800278331 /* AAHistoryCell.xib */; };
 		892FF6CE1FC510DC00278331 /* HistoryDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 892FF6CD1FC510DC00278331 /* HistoryDetailController.m */; };
 		892FF6D31FC571CE00278331 /* areaid.txt in Resources */ = {isa = PBXBuildFile; fileRef = 892FF6D21FC571CD00278331 /* areaid.txt */; };
+		893351A01FDA3C8B00B8138F /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933519D1FDA3C8A00B8138F /* MBProgressHUD.m */; };
+		893351A11FDA3C8B00B8138F /* MBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8933519F1FDA3C8B00B8138F /* MBManager.m */; };
 		893943C81FCC135000229BB1 /* cityName.plist in Resources */ = {isa = PBXBuildFile; fileRef = 893943C71FCC135000229BB1 /* cityName.plist */; };
 		89412ABC1FC267D3002FF822 /* UIColor+PMColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 89412ABB1FC267D3002FF822 /* UIColor+PMColors.m */; };
 		89412ACC1FC268AF002FF822 /* BasicRoutineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89412AC01FC268AF002FF822 /* BasicRoutineViewController.m */; };
@@ -441,6 +443,10 @@
 		892FF6CC1FC510DC00278331 /* HistoryDetailController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HistoryDetailController.h; sourceTree = "<group>"; };
 		892FF6CD1FC510DC00278331 /* HistoryDetailController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HistoryDetailController.m; sourceTree = "<group>"; };
 		892FF6D21FC571CD00278331 /* areaid.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = areaid.txt; sourceTree = "<group>"; };
+		8933519C1FDA3C8A00B8138F /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		8933519D1FDA3C8A00B8138F /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
+		8933519E1FDA3C8B00B8138F /* MBManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBManager.h; sourceTree = "<group>"; };
+		8933519F1FDA3C8B00B8138F /* MBManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBManager.m; sourceTree = "<group>"; };
 		893943C71FCC135000229BB1 /* cityName.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = cityName.plist; sourceTree = "<group>"; };
 		89412ABA1FC267D3002FF822 /* UIColor+PMColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+PMColors.h"; sourceTree = "<group>"; };
 		89412ABB1FC267D3002FF822 /* UIColor+PMColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+PMColors.m"; sourceTree = "<group>"; };
@@ -2164,6 +2170,10 @@
 				8996AE131FBF13D20004B55F /* ADConstants.m */,
 				8996AE141FBF13D20004B55F /* ADUtils.h */,
 				8996AE151FBF13D20004B55F /* ADUtils.m */,
+				8933519E1FDA3C8B00B8138F /* MBManager.h */,
+				8933519F1FDA3C8B00B8138F /* MBManager.m */,
+				8933519C1FDA3C8A00B8138F /* MBProgressHUD.h */,
+				8933519D1FDA3C8A00B8138F /* MBProgressHUD.m */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -2343,7 +2353,7 @@
 				TargetAttributes = {
 					89E9E8411FBD2AE000C21790 = {
 						CreatedOnToolsVersion = 9.0;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					89E9E8591FBD2AE000C21790 = {
 						CreatedOnToolsVersion = 9.0;
@@ -2644,6 +2654,7 @@
 				8996AC951FBEC0A20004B55F /* dispatch_timer.m in Sources */,
 				8996AE031FBEC1660004B55F /* emhashmap.c in Sources */,
 				8996AD131FBEC0A20004B55F /* SDLHeadLampStatus.m in Sources */,
+				893351A11FDA3C8B00B8138F /* MBManager.m in Sources */,
 				8996AD991FBEC0A40004B55F /* SDLSetMediaClockTimerResponse.m in Sources */,
 				8996ADA61FBEC0A40004B55F /* SDLSpeakResponse.m in Sources */,
 				8996AD161FBEC0A20004B55F /* SDLHMILevel.m in Sources */,
@@ -2760,6 +2771,7 @@
 				8996AD1D1FBEC0A20004B55F /* SDLImage.m in Sources */,
 				89412AE11FC2D833002FF822 /* AAReciveModel.m in Sources */,
 				8996ACFC1FBEC0A20004B55F /* SDLEndAudioPassThru.m in Sources */,
+				893351A01FDA3C8B00B8138F /* MBProgressHUD.m in Sources */,
 				8996AD451FBEC0A30004B55F /* SDLObjectWithPriority.m in Sources */,
 				8996AD201FBEC0A30004B55F /* SDLImageResolution.m in Sources */,
 				8996AD951FBEC0A30004B55F /* SDLSetDisplayLayoutResponse.m in Sources */,
@@ -3139,14 +3151,17 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5A199DC847B15874277AB995 /* Pods-AAR Diagnostic Tool.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = A479K73LB4;
 				INFOPLIST_FILE = "AAR Diagnostic Tool/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Ford.AAR-Diagnostic-Tool";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "fa81a640-b4c9-491f-b215-c3993a8fb24f";
+				PROVISIONING_PROFILE_SPECIFIER = FORD_InHouse_WildCard;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -3155,14 +3170,17 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DA07D5C3991DD4304EBF6CBC /* Pods-AAR Diagnostic Tool.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = A479K73LB4;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "AAR Diagnostic Tool/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Ford.AAR-Diagnostic-Tool";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
