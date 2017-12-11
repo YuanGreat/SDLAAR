@@ -42,7 +42,7 @@
         for (NSString *fileName in nameArray) {
             NSArray *pathArr=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
             NSString *strPath=[pathArr lastObject];
-            NSString *strFinalPath=[NSString stringWithFormat:@"%@/%@.txt",strPath,fileName];
+            NSString *strFinalPath=[NSString stringWithFormat:@"%@/%@.csv",strPath,fileName];
             NSString *fileString = [NSString stringWithContentsOfFile:strFinalPath encoding:NSUTF8StringEncoding error:nil];
             NSDictionary *dic = [NSDictionary dictionaryWithObject:fileString forKey:fileName];
             NSLog(@"fileName ------  %@  fileString ------- %@",fileName,fileString);

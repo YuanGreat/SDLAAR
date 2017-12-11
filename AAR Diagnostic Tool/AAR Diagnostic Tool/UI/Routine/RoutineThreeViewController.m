@@ -82,11 +82,13 @@ NSString * const disgnosticMode3 = @"Routine3";
         model.exterior_pm_value = @1000;
         model.cityname_en = @"";
         model.cityname_zh = @"";
+        model.cityname_ko = @"";
     }else{
         model.exterior_pm_value = [NSNumber numberWithInteger:sendPM3];
         model.diagnostic_state = @2;  //No Issue
         model.cityname_en = name_en;
         model.cityname_zh = name_zh;
+        model.cityname_ko = name_en;
         model.pm_type = @1;  //PM2.5
     }
     AADataModel *dataModel = [[AADataModel alloc] init];

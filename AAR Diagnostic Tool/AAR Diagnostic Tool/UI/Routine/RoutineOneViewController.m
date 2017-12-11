@@ -15,7 +15,7 @@
 #import "SmartDeviceLink.h"
 #import "ProxyManager.h"           
 
-NSInteger const refreshTime = 5;   //刷新时间
+NSInteger const refreshTime = 30;   //刷新时间
 NSInteger const transmissionRate = 25;  //增减幅度
 NSInteger const maxPM = 300;   //PM2.5最大值
 NSInteger const minPM = 0;  //PM2.5最小值
@@ -103,8 +103,8 @@ NSString * const disgnosticMode = @"Routine1";
         model.exterior_pm_value = @1000;
         model.cityname_en = @"";
         model.cityname_zh = @"";
-         self.pm = maxPM;
-        
+        model.cityname_ko = @"";
+        self.pm = maxPM;
 //        model.diagnostic_state = @0;  //initializing
 //        model.pm_type = @1;  //PM2.5
 //        model.exterior_pm_value = @116;
@@ -118,6 +118,7 @@ NSString * const disgnosticMode = @"Routine1";
     model.diagnostic_state = @2;  //No Issue
     model.cityname_en = name_en;
     model.cityname_zh = name_zh;
+    model.cityname_ko = name_en;
     model.pm_type = @1;  //PM2.5
 //        model.diagnostic_state = @0;  //initializing
 //        model.pm_type = @1;  //PM2.5
@@ -185,7 +186,6 @@ NSString * const disgnosticMode = @"Routine1";
     [self.timer invalidate];
     self.timer = nil;
 }
-
 
 
 @end

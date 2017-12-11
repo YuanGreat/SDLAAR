@@ -14,6 +14,7 @@
 #import "AADataModel.h"
 #import "UIColor+PMColors.h"
 #import "ADConstants.h"
+#import "MBManager.h"
 
 @implementation AATool
 
@@ -121,19 +122,27 @@
     //Moved this stuff out of the loop so that you write the complete string once and only once.
     NSLog(@"writeString :%@",writeStr);
     
-    NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%@.%@",@"Documents/",fileName,@"txt"]];
+   // NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%@.%@",@"Documents/",fileName,@"txt"]];
     
 //    NSString *path = [[self applicationDocumentsDirectory].path
 //                      stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%@",fileName,@".cvs"]];
     
     NSArray *pathArr=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *strPath=[pathArr lastObject];
-    NSString *strFinalPath=[NSString stringWithFormat:@"%@/%@.txt",strPath,fileName];
+    NSString *strFinalPath=[NSString stringWithFormat:@"%@/%@.csv",strPath,fileName];
     
     NSLog(@"path ------------------------ %@",strFinalPath);
     NSError *error = nil;
     BOOL ifSuccess = [writeStr writeToFile:strFinalPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
    
+    
+    if (ifSuccess) {
+        [MBManager showBriefAlert:@"save successful"];
+    }else{
+        [MBManager showBriefAlert:@"save failed"];
+    }
+    
+    
     if (ifSuccess) {
         //将文件名记录到NSUserDefaults
         //判断之前有无存储过同样的记录

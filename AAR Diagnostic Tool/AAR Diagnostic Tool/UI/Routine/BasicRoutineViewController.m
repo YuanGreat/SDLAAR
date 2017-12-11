@@ -269,7 +269,11 @@
     NSString *fileName = [NSString stringWithFormat:@"%ld",(long)self.fileName];;
     ProxyManager *proxyManager = [ProxyManager sharedManager];
     SDLPutFile *putFile = [[SDLPutFile alloc] init];
+   
+    NSLog(@"putFile.bulkData %@",putFile.bulkData);
+    
     putFile.bulkData = fileData;
+    
     putFile.syncFileName = fileName;
     putFile.fileType = [SDLFileType JSON];
     putFile.systemFile = @(NO);
@@ -302,5 +306,5 @@
     return ifSuccess;
 }
 
-                
+
 @end

@@ -18,7 +18,6 @@ NSInteger const transmissionRate4 = 3;  //增减幅度
 NSInteger const sendPM4 = 50;   //PM2.5稳定发送值
 NSString * const disgnosticMode4 = @"Routine4";
 
-
 @interface RoutineFourViewController ()
 
 @property (assign , nonatomic) NSInteger count;  //发送次数
@@ -84,17 +83,20 @@ NSString * const disgnosticMode4 = @"Routine4";
         model.exterior_pm_value = @1000;
         model.cityname_en = @"";
         model.cityname_zh = @"";
+        model.cityname_ko = @"";
     }else if(self.count % 2 == 1){
         model.exterior_pm_value = [NSNumber numberWithInteger:sendPM4];
         model.diagnostic_state = @2;  //No Issue
         model.cityname_en = name_en;
         model.cityname_zh = name_zh;
+        model.cityname_ko = name_en;
         model.pm_type = @1;  //PM2.5
     }else{
         model.exterior_pm_value = @1000;
         model.diagnostic_state = @1;  //Blank the Fiel
         model.cityname_en = @"";
         model.cityname_zh = @"";
+        model.cityname_ko = @"";
         model.pm_type = @1;  //PM2.5
     }
     AADataModel *dataModel = [[AADataModel alloc] init];
